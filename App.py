@@ -2,7 +2,7 @@ import streamlit as st
 
 # App title
 st.set_page_config(page_title="Hobby Chatbot", page_icon="💬")
-st.title("💬 Interests & Hobbies Chatbot")
+st.title("💬 Chatbot")
 
 st.write("Hi! I'm a chatbot that loves talking about interests and hobbies 😁")
 
