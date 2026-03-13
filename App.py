@@ -1,18 +1,9 @@
-import streamlit as st
-import random
 
-# Page setup
-st.set_page_config(page_title="Hobby Chatbot", page_icon="💬")
-
-st.title("💬 Hobby Chatbot")
-st.write("Hi! I'm a chatbot that loves talking about hobbies and interests 😊")
-
-# Chat memory
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Bot logic
 def generate_reply(user_input):
+
+    math_result = solve_math(user_input)
+    if math_result:
+        return math_result
 
     text = user_input.lower()
 
@@ -59,27 +50,3 @@ def generate_reply(user_input):
             "Nice! What do you enjoy most about it?",
             "That sounds fun! Do you do it often?"
         ])
-
-
-# Show previous messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# Input box
-user_input = st.chat_input("Tell me about your hobbies...")
-
-if user_input:
-
-    # Show user message
-    st.session_state.messages.append({"role":"user","content":user_input})
-    with st.chat_message("user"):
-        st.markdown(user_input)
-
-    # Generate response
-    reply = generate_reply(user_input)
-
-    # Show bot message
-    st.session_state.messages.append({"role":"assistant","content":reply})
-    with st.chat_message("assistant"):
-        st.markdown(reply)
