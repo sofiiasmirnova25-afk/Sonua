@@ -1,10 +1,18 @@
+import streamlit as st
+import random
 
+# Page config
+st.set_page_config(page_title="Hobby Chatbot", page_icon="💬")
+
+st.title("💬 Chatbot")
+st.write("A simple chatbot (no API needed)")
+
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Chatbot logic
 def generate_reply(user_input):
-
-    math_result = solve_math(user_input)
-    if math_result:
-        return math_result
-
     text = user_input.lower()
 
     hobbies = [
@@ -23,7 +31,7 @@ def generate_reply(user_input):
         return "Hello! 👋 Tell me about your hobbies."
 
     elif "hobby" in text and ("suggest" in text or "idea" in text or "recommend" in text):
-        return "Here are some hobby ideas:\n\n" + "\n".join(random.sample(hobbies,3))
+        return "Here are some hobby ideas:\n\n" + "\n".join(random.sample(hobbies, 3))
 
     elif "music" in text:
         return "Music is great! 🎵 Do you play an instrument or just listen?"
@@ -50,3 +58,28 @@ def generate_reply(user_input):
             "Nice! What do you enjoy most about it?",
             "That sounds fun! Do you do it often?"
         ])
+
+# Display chat history
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# User input
+user_input = st.chat_input("Type your message...")
+
+if user_input:
+    # Store user message
+    st.session_state.messages.append({"role": "user", "content": user_input})
+
+    # Generate bot response
+    response = generate_reply(user_input)
+
+    # Store bot response
+    st.session_state.messages.append({"role": "assistant", "content": response})
+
+    # Display immediately
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    with st.chat_message("assistant"):
+        st.markdown(response)
