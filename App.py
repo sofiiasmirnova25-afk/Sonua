@@ -1,13 +1,13 @@
 import streamlit as st
 import random
 
-# Page config
+# Page setup
 st.set_page_config(page_title="Hobby Chatbot", page_icon="💬")
 
-st.title("💬 Chatbot")
-st.write("A simple chatbot (no API needed)")
+st.title("💬 Hobby Chatbot")
+st.write("Chat with a simple bot — no API needed!")
 
-# Initialize chat history
+# Store chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -34,50 +34,50 @@ def generate_reply(user_input):
         return "Here are some hobby ideas:\n\n" + "\n".join(random.sample(hobbies, 3))
 
     elif "music" in text:
-        return "Music is great! 🎵 Do you play an instrument or just listen?"
+        return "Music is great! 🎵 Do you play or just listen?"
 
     elif "sport" in text or "football" in text or "basketball" in text:
-        return "Sports are fun! ⚽ Do you prefer playing or watching?"
+        return "Sports are fun! ⚽ Do you like playing or watching?"
 
     elif "read" in text or "book" in text:
-        return "Reading is amazing! 📚 What type of books do you enjoy?"
+        return "Reading is awesome! 📚 What do you like to read?"
 
-    elif "game" in text or "gaming" in text:
-        return "Gaming is fun! 🎮 What games do you like?"
+    elif "game" in text:
+        return "Gaming is fun! 🎮 What games do you play?"
 
     elif "coding" in text or "programming" in text:
-        return "Coding is awesome! 💻 What language do you like?"
+        return "Coding is cool! 💻 What language do you use?"
 
     elif "bye" in text:
-        return "Goodbye! 👋 Come back if you want to chat about hobbies!"
+        return "Goodbye! 👋 Come back anytime!"
 
     else:
         return random.choice([
-            "That sounds interesting! Tell me more 😊",
-            "Cool! How did you start doing that?",
-            "Nice! What do you enjoy most about it?",
-            "That sounds fun! Do you do it often?"
+            "That sounds interesting! 😊",
+            "Tell me more!",
+            "Nice! What do you enjoy most?",
+            "Sounds fun! Do you do it often?"
         ])
 
-# Display chat history
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+# Show previous messages
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
 
-# User input
+# Input box
 user_input = st.chat_input("Type your message...")
 
 if user_input:
-    # Store user message
+    # Save user message
     st.session_state.messages.append({"role": "user", "content": user_input})
 
-    # Generate bot response
+    # Generate response
     response = generate_reply(user_input)
 
-    # Store bot response
+    # Save bot response
     st.session_state.messages.append({"role": "assistant", "content": response})
 
-    # Display immediately
+    # Display messages
     with st.chat_message("user"):
         st.markdown(user_input)
 
