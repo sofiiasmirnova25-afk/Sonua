@@ -1,4 +1,15 @@
-import streamlit as st
+def solve_math(expression):
+    try:
+        # Only allow numbers and +, -, *, /
+        if re.match(r'^[0-9+\-*/().\s]+$', expression):
+            # Evaluate safely
+            result = eval(expression)
+            # Simple step-by-step breakdown (works for addition/subtraction/multiplication/division)
+            steps = [f"Original: {expression}", f"Result: {result}"]
+            return "🧮 Step-by-step:\n" + "\n".join(steps)
+    except:
+        return None
+        import streamlit as st
 import random
 import re
 from sympy import sympify, simplify, pretty, Add, Mul
