@@ -3,28 +3,28 @@ import streamlit as st
 st.markdown(
     """
     <style>
-    /* Main app background */
+    /* App background */
     .stApp {
-        background-color: black;
+        background-color: #0e1117;
+    }
+
+    /* Main text */
+    p, span, div, label {
         color: #FF69B4;
     }
 
-    /* General text */
-    p, span, div, label {
-        color: #FF69B4 !important;
-    }
-
     /* Headings */
-    h1, h2, h3, h4, h5, h6 {
-        color: #FF69B4 !important;
+    h1, h2, h3 {
+        color: #FF69B4;
     }
 
     /* Buttons */
     .stButton > button {
-        background-color: black;
+        background-color: transparent;
         color: #FF69B4;
         border: 1px solid #FF69B4;
-        border-radius: 10px;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
     }
 
     .stButton > button:hover {
@@ -32,21 +32,17 @@ st.markdown(
         color: black;
     }
 
-    /* Text inputs and text areas */
-    input, textarea {
-        background-color: black !important;
-        color: #FF69B4 !important;
-        border: 1px solid #FF69B4 !important;
-    }
-
-    /* Sliders */
-    .stSlider div {
-        color: #FF69B4 !important;
+    /* Input fields */
+    .stTextInput input, .stTextArea textarea {
+        background-color: #1c1f26;
+        color: #FF69B4;
+        border: 1px solid #FF69B4;
+        border-radius: 6px;
     }
 
     /* Sidebar */
     section[data-testid="stSidebar"] {
-        background-color: black;
+        background-color: #111;
     }
     </style>
     """,
