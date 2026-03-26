@@ -1,43 +1,54 @@
-st.markdown("""
-<style>
-/* Background */
-body, .stApp {
-    background-color: black;
-}
+import streamlit as st
 
-/* ALL text pink */
-html, body, [class*="css"] {
-    color: #FF69B4 !important;
-}
+st.markdown(
+    """
+    <style>
+    /* Main app background */
+    .stApp {
+        background-color: black;
+        color: #FF69B4;
+    }
 
-/* Titles */
-h1, h2, h3, h4, h5, h6 {
-    color: #FF69B4 !important;
-}
+    /* General text */
+    p, span, div, label {
+        color: #FF69B4 !important;
+    }
 
-/* Buttons */
-.stButton>button {
-    background-color: black;
-    color: #FF69B4;
-    border: 1px solid #FF69B4;
-    border-radius: 10px;
-}
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {
+        color: #FF69B4 !important;
+    }
 
-.stButton>button:hover {
-    background-color: #FF69B4;
-    color: black;
-}
+    /* Buttons */
+    .stButton > button {
+        background-color: black;
+        color: #FF69B4;
+        border: 1px solid #FF69B4;
+        border-radius: 10px;
+    }
 
-/* Inputs */
-input, textarea {
-    background-color: black !important;
-    color: #FF69B4 !important;
-    border: 1px solid #FF69B4 !important;
-}
+    .stButton > button:hover {
+        background-color: #FF69B4;
+        color: black;
+    }
 
-/* Sliders */
-.stSlider * {
-    color: #FF69B4 !important;
-}
-</style>
-""", unsafe_allow_html=True)
+    /* Text inputs and text areas */
+    input, textarea {
+        background-color: black !important;
+        color: #FF69B4 !important;
+        border: 1px solid #FF69B4 !important;
+    }
+
+    /* Sliders */
+    .stSlider div {
+        color: #FF69B4 !important;
+    }
+
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: black;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
