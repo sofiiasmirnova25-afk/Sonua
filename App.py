@@ -1,46 +1,23 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import numpy as np
-from collections import OrderedDict
-from PIL import Image
 import random
 import re
 
-# ------------------ PAGE CONFIG ------------------
-st.set_page_config(
-    page_title="Hobby Finder + Chatbot",
-    page_icon="🌸",
-    layout="centered"
-)
+# ------------------ CONFIG ------------------
+st.set_page_config(page_title="Hobby App", page_icon="🌸")
 
-# ------------------ PASTEL THEME ------------------
+# ------------------ STYLE ------------------
 st.markdown("""
 <style>
-:root {
-    --main-bg: #FFF0F5;
-    --secondary-bg: #FFE4EC;
-    --accent: #FF8FB1;
-    --text: #4A4A4A;
-}
-
 body, .stApp {
-    background-color: var(--main-bg);
-    color: var(--text);
+    background-color: #FFF0F5;
 }
-
-.stButton>button {
-    background-color: var(--accent);
-    color: white;
-    border-radius: 12px;
-    border: none;
-}
-
-.stButton>button:hover {
-    background-color: #ff6f9f;
-}
-
 h1, h2, h3 {
-    color: var(--accent);
+    color: #FF8FB1;
+}
+.stButton>button {
+    background-color: #FF8FB1;
+    color: white;
+    border-radius: 10px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -58,178 +35,100 @@ with tab1:
     age = st.number_input("Age", 5, 100, 20)
     fitness = st.selectbox("Fitness Level", ["Low", "Medium", "High"])
 
-    questions = {
-        "creative": "Creative",
-        "outdoor": "Outdoor",
-        "social": "Social",
-        "physical": "Physical",
-        "learning": "Learning",
-        "technology": "Technology",
-        "music": "Music",
-        "patience": "Patience",
-    }
+    st.subheader("Your Preferences")
 
-    answers = {k: st.slider(v, 1, 5, 3) for k, v in questions.items()}
+    creative = st.slider("Creative", 1, 5, 3)
+    outdoor = st.slider("Outdoor", 1, 5, 3)
+    social = st.slider("Social", 1, 5, 3)
+    physical = st.slider("Physical", 1, 5, 3)
 
     user_text = st.text_area("Extra interests")
 
-    # -------- SMART SCORING SYSTEM --------
-    hobby_db = {
-        "🎨 Painting": {"creative":5, "patience":4},
-        "💻 Coding": {"technology":5, "learning":4},
-        "🏋️ Gym": {"physical":5},
-        "📚 Reading": {"learning":5, "patience":4},
-        "⚽ Football": {"physical":5, "social":4},
-        "🎤 Singing": {"music":5, "social":3},
-        "🥾 Hiking": {"outdoor":5},
-        "🧘 Yoga": {"physical":3, "patience":5},
-    }
+    def suggest():
+        hobbies = []
 
-    def score_hobbies():
-        scores = {}
+        if creative >= 4:
+            hobbies += ["🎨 Painting", "✏️ Drawing"]
 
-        for hobby, traits in hobby_db.items():
-            score = 0
-            for t, weight in traits.items():
-                score += answers[t] * weight
-            scores[hobby] = score
+        if outdoor >= 4:
+            hobbies += ["🥾 Hiking"]
 
-        sorted_hobbies = sorted(scores, key=scores.get, reverse=True)
+        if social >= 4:
+            hobbies += ["⚽ Team Sports"]
+        elif social <= 2:
+            hobbies += ["📚 Reading"]
 
-        # text boost
+        if physical >= 4:
+            hobbies += ["🏋️ Gym"] if fitness != "Low" else ["🚶 Walking"]
+
         if "cook" in user_text.lower():
-            sorted_hobbies.insert(0, "👩‍🍳 Cooking")
+            hobbies.append("👩‍🍳 Cooking")
 
-        return list(OrderedDict.fromkeys(sorted_hobbies[:6]))
-
-    def radar_chart():
-        labels = list(answers.keys())
-        values = [v/5 for v in answers.values()]
-
-        values += values[:1]
-        angles = np.linspace(0, 2*np.pi, len(labels), endpoint=False).tolist()
-        angles += angles[:1]
-
-        fig, ax = plt.subplots(subplot_kw=dict(polar=True))
-        fig.patch.set_facecolor("#FFF0F5")
-        ax.set_facecolor("#FFE4EC")
-
-        ax.plot(angles, values)
-        ax.fill(angles, values, alpha=0.3)
-
-        ax.set_xticks(angles[:-1])
-        ax.set_xticklabels(labels)
-
-        return fig
+        return hobbies
 
     if st.button("✨ Suggest"):
-        st.pyplot(radar_chart())
-        for h in score_hobbies():
-            st.write(h)
+        results = suggest()
+        if results:
+            for h in results:
+                st.write(h)
+        else:
+            st.write("Try adjusting your answers 🌸")
 
 # =====================================================
 # ================= CHATBOT ============================
 # =====================================================
 with tab2:
 
-    st.title("💬 Smart Chatbot")
+    st.title("💬 Chatbot")
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
-
-    if "last_hobby" not in st.session_state:
-        st.session_state.last_hobby = None
 
     hobbies = [
         "🎸 Try guitar!",
         "🎨 Try drawing!",
         "📚 Try reading!",
-        "🏊 Try swimming!",
         "🎮 Try gaming!"
     ]
 
-    # -------- BETTER MATH SOLVER --------
     def solve_math(expr):
         try:
             if not re.match(r'^[0-9+\-*/().\s]+$', expr):
                 return None
-
-            expr = expr.replace(" ", "")
-            result = eval(expr)
-
-            steps = []
-            steps.append(f"Expression: {expr}")
-
-            if "*" in expr:
-                steps.append("Step: Multiplication first")
-
-            if "/" in expr:
-                steps.append("Step: Division")
-
-            if "+" in expr or "-" in expr:
-                steps.append("Step: Addition/Subtraction")
-
-            steps.append(f"Final Answer = {result}")
-
-            return "\n".join(steps)
-
+            return f"Answer: {eval(expr)}"
         except:
             return None
 
-    # -------- SMART RULE-BASED CHAT --------
-    def chatbot(user):
+    def reply(user):
         text = user.lower()
 
-        # math
         math = solve_math(text)
         if math:
-            return "🧮\n" + math
+            return math
 
-        # greetings
-        if any(w in text for w in ["hi","hello","hey"]):
-            return random.choice([
-                "Hey there 🌸",
-                "Hello 😊",
-                "Hi! How can I help?"
-            ])
+        if "hi" in text:
+            return "Hello 🌸"
 
-        # mood detection
-        if "sad" in text:
-            return "I'm here for you 💗 Maybe try a relaxing hobby?"
-
-        # hobbies
         if "hobby" in text:
-            h = random.choice(hobbies)
-            st.session_state.last_hobby = h
-            return h
+            return random.choice(hobbies)
 
-        if "another" in text:
-            remaining = [h for h in hobbies if h != st.session_state.last_hobby]
-            return random.choice(remaining) if remaining else "That's all I got 😅"
+        if "bye" in text:
+            return "Bye 💕"
 
-        # fallback
-        return random.choice([
-            "Tell me more 😊",
-            "Interesting 👀",
-            "That sounds fun 🌸"
-        ])
+        return "Tell me more 😊"
 
-    # display messages
-    for m in st.session_state.messages:
-        with st.chat_message(m["role"]):
-            st.write(m["content"])
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
 
-    user_input = st.chat_input("Type message or math (e.g. 3*5+2)")
+    user_input = st.chat_input("Type here...")
 
     if user_input:
-        st.session_state.messages.append({"role":"user","content":user_input})
-
-        reply = chatbot(user_input)
-
-        st.session_state.messages.append({"role":"assistant","content":reply})
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        response = reply(user_input)
+        st.session_state.messages.append({"role": "assistant", "content": response})
 
         with st.chat_message("user"):
             st.write(user_input)
-
         with st.chat_message("assistant"):
-            st.write(reply)
+            st.write(response)
